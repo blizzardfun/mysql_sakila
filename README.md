@@ -1,2 +1,2 @@
 # mysql_sakila
-homework using mySQK on the sakila database
+homework using MySQL on the sakila database
