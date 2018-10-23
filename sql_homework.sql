@@ -55,20 +55,22 @@ group by last_name
 having count(last_name)>1;
 
 -- 4c. The actor `HARPO WILLIAMS` was accidentally entered in the `actor` table as `GROUCHO WILLIAMS`. Write a query to fix the record.
+-- check data
 select first_name, last_name
 from actor
 where last_name = 'WILLIAMS';
-
+-- make the change from groucho to harpo
 update actor
  set first_name = 'HARPO' 
  where last_name = 'WILLIAMS' and first_name='GROUCHO';
  
--- verify 
+-- verify change
 select first_name, last_name
 from actor
 where last_name = 'WILLIAMS';
 
--- 4D if the first name of the actor is currently `HARPO`, change it to `GROUCHO` THESE WERE THE INSTRUCTIONS, BUT I ASSUMED IT ONLY MEANS IF THE LAST NAME IS WILLIAMS
+-- 4D if the first name of the actor is currently `HARPO`, change it to `GROUCHO` 
+-- THESE WERE THE INSTRUCTIONS, BUT I ASSUMED IT ONLY MEANS IF THE LAST NAME IS WILLIAMS
 update actor
  set first_name = 'GROUCHO' 
  where last_name = 'WILLIAMS' and first_name='HARPO';
@@ -109,7 +111,7 @@ using(film_id)
 where title = 'Hunchback Impossible';
 
 -- 6e. list the total paid by each customer. List the customers alphabetically by last name:
-select first_name, last_name,  sum(amount)
+select last_name, first_name,  sum(amount)
 from payment join customer
 using (customer_id)
 group by last_name,first_name
@@ -179,9 +181,9 @@ group by store_id;
 select sum(amount)
 from payment;
 
--- so 9.95 from the payment table is not property associated with a rental 
--- I found the problem in the payment table where 5 payments have a null rental_id
-select p.rental_id, amount
+-- so 9.95 from the payment table is not associated with a rental 
+-- I found the 5 rows in the payment table where payments have a null rental_id
+select payment_id,p.rental_id, amount
 from payment p left join rental r
 on p.rental_id = r.rental_id
 where r.rental_id is null;
@@ -192,7 +194,7 @@ from store s join (address a,city cty,country c)
 on (s.address_id = a.address_id and a.city_id=cty.city_id and cty.country_id=c.country_id);
 
 -- 7h. List the top five genres in gross revenue in descending order. 
-select c.name, sum(amount) as category_total
+select c.name as genre, sum(amount) as category_total
 from category c join(film_category fc ,inventory i,rental r, payment p)
 on (c.category_id=fc.category_id and fc.film_id=i.film_id and i.inventory_id=r.inventory_id and r.rental_id=p.rental_id)
 group by c.category_id
@@ -201,7 +203,7 @@ limit 5;
 
 -- 8a create a view from 7h 
 create view top_genre as
-select c.name, sum(amount) as category_total
+select c.name as genre, sum(amount) as category_total
 from category c join(film_category fc ,inventory i,rental r, payment p)
 on (c.category_id=fc.category_id and fc.film_id=i.film_id and i.inventory_id=r.inventory_id and r.rental_id=p.rental_id)
 group by c.category_id
